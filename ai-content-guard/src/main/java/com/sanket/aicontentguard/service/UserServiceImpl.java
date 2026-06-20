@@ -8,6 +8,7 @@ import com.sanket.aicontentguard.entity.User;
 import com.sanket.aicontentguard.exception.InvalidCredentialsException;
 import com.sanket.aicontentguard.exception.ResourceAlreadyExistsException;
 import com.sanket.aicontentguard.repository.UserRepository;
+import com.sanket.aicontentguard.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtService jwtService;
 
     @Override
     public String registerUser(RegisterRequestDTO request) {
@@ -61,12 +64,18 @@ public class UserServiceImpl implements UserService {
             );
         }
 
+        String token =
+                jwtService.generateToken(
+                        user.getEmail()
+                );
+
         return LoginResponseDTO.builder()
                 .userId(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole().name())
                 .message("Login successful")
+                .token(token)
                 .build();
     }
 }
