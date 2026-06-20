@@ -4,44 +4,43 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "summaries")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Summary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     @Column(nullable = false)
-    private String name;
+    private String originalText;
 
-    @Column(nullable = false,
-            unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
+    @Lob
+    private String summaryText;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private SummaryType summaryType;
+
+    @Enumerated(EnumType.STRING)
+    private SummaryStatus status;
+
+    private Integer riskScore;
 
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
-
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL
-    )
-    private List<Summary> summaries;
 }
