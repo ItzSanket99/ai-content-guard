@@ -1,8 +1,11 @@
 package com.sanket.aicontentguard.service;
 
+import com.sanket.aicontentguard.dto.LoginRequestDTO;
+import com.sanket.aicontentguard.dto.LoginResponseDTO;
 import com.sanket.aicontentguard.dto.RegisterRequestDTO;
 import com.sanket.aicontentguard.entity.Role;
 import com.sanket.aicontentguard.entity.User;
+import com.sanket.aicontentguard.exception.InvalidCredentialsException;
 import com.sanket.aicontentguard.exception.ResourceAlreadyExistsException;
 import com.sanket.aicontentguard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +38,35 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return "User registered successfully";
+    }
+
+    @Override
+    public LoginResponseDTO loginUser(LoginRequestDTO request) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new InvalidCredentialsException(
+                                "Invalid email or password"
+                        ));
+
+        boolean matches = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
+
+        if (!matches) {
+            throw new InvalidCredentialsException(
+                    "Invalid email or password"
+            );
+        }
+
+        return LoginResponseDTO.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .message("Login successful")
+                .build();
     }
 }
