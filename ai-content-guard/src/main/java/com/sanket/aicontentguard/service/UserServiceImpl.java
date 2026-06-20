@@ -6,6 +6,7 @@ import com.sanket.aicontentguard.entity.User;
 import com.sanket.aicontentguard.exception.ResourceAlreadyExistsException;
 import com.sanket.aicontentguard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public String registerUser(RegisterRequestDTO request) {
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(request.getPassword()) // encrypted later
+                .password(passwordEncoder.encode(request.getPassword())) // encrypted later
                 .role(Role.USER)
                 .build();
 
