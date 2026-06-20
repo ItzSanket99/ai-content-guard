@@ -1,5 +1,6 @@
 package com.sanket.aicontentguard.security;
 
+import com.sanket.aicontentguard.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -27,20 +28,18 @@ public class JwtService {
         );
     }
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
 
         return Jwts.builder()
-                .subject(email)
+                .claim("role", user.getRole().name())
+                .subject(user.getEmail())
                 .issuedAt(new Date())
                 .expiration(
                         new Date(
-                                System.currentTimeMillis()
-                                        + jwtExpiration
+                                System.currentTimeMillis() + jwtExpiration
                         )
                 )
-                .signWith(
-                        getSigningKey()
-                )
+                .signWith(getSigningKey())
                 .compact();
     }
 
