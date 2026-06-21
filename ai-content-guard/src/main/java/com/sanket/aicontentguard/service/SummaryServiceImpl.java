@@ -2,6 +2,7 @@ package com.sanket.aicontentguard.service;
 
 import com.sanket.aicontentguard.dto.CreateSummaryRequestDTO;
 import com.sanket.aicontentguard.dto.RiskAnalysisResult;
+import com.sanket.aicontentguard.dto.SummaryHistoryDTO;
 import com.sanket.aicontentguard.dto.SummaryResponseDTO;
 import com.sanket.aicontentguard.entity.Summary;
 import com.sanket.aicontentguard.entity.SummaryStatus;
@@ -12,6 +13,8 @@ import com.sanket.aicontentguard.repository.UserRepository;
 import com.sanket.aicontentguard.repository.ViolationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SummaryServiceImpl implements SummaryService{
@@ -83,6 +86,64 @@ public class SummaryServiceImpl implements SummaryService{
                         riskResult.getViolations()
                 )
                 .summaryType(saved.getSummaryType())
+                .build();
+    }
+
+    @Override
+    public List<SummaryHistoryDTO> getMySummaries(
+            String email
+    ) {
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(
+                        () -> new RuntimeException("User not found")
+                );
+
+        return summaryRepository
+                .findByUser(user)
+                .stream()
+                .map(summary ->
+                        SummaryHistoryDTO.builder()
+                                .id(summary.getId())
+                                .summaryType(summary.getSummaryType())
+                                .status(summary.getStatus())
+                                .riskScore(summary.getRiskScore())
+                                .riskLevel(summary.getRiskLevel())
+                                .createdAt(summary.getCreatedAt())
+                                .build()
+                )
+                .toList();
+    }
+
+    @Override
+    public SummaryResponseDTO getSummaryById(
+            Long id,
+            String email
+    ) {
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(
+                        () -> new RuntimeException("User not found")
+                );
+
+        Summary summary = summaryRepository
+                .findByIdAndUser(id, user)
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "Summary not found"
+                        )
+                );
+
+        return SummaryResponseDTO.builder()
+                .id(summary.getId())
+                .originalText(summary.getOriginalText())
+                .summaryText(summary.getSummaryText())
+                .status(summary.getStatus())
+                .riskScore(summary.getRiskScore())
+                .riskLevel(summary.getRiskLevel())
+                .summaryType(summary.getSummaryType())
                 .build();
     }
 }
