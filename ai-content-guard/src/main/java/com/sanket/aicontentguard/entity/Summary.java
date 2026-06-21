@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "summaries")
@@ -38,6 +39,15 @@ public class Summary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    private RiskLevel riskLevel;
+
+    @OneToMany(
+            mappedBy = "summary",
+            cascade = CascadeType.ALL
+    )
+    private List<Violation> violations;
 
     @PrePersist
     public void prePersist() {
