@@ -23,4 +23,11 @@ public interface SummaryRepository extends JpaRepository<Summary, Long> {
             FROM Summary s
             """)
     Double getAverageRiskScore();
+
+    @Query("""
+        SELECT s.riskLevel, COUNT(s)
+        FROM Summary s
+        GROUP BY s.riskLevel
+        """)
+    List<Object[]> getRiskDistribution();
 }

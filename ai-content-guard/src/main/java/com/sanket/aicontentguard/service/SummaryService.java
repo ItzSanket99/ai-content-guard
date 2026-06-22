@@ -3,6 +3,7 @@ package com.sanket.aicontentguard.service;
 import com.sanket.aicontentguard.dto.CreateSummaryRequestDTO;
 import com.sanket.aicontentguard.dto.SummaryHistoryDTO;
 import com.sanket.aicontentguard.dto.SummaryResponseDTO;
+import com.sanket.aicontentguard.dto.ViolationStatsDTO;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface SummaryService {
             Long id,
             String email
     );
+
+
 }

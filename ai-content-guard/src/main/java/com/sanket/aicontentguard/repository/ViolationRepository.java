@@ -17,4 +17,12 @@ public interface ViolationRepository extends JpaRepository<Violation, Long> {
         ORDER BY COUNT(v) DESC
         """)
     List<Object[]> findViolationStatistics();
+
+    @Query("""
+        SELECT v.category, COUNT(v)
+        FROM Violation v
+        GROUP BY v.category
+        ORDER BY COUNT(v) DESC
+        """)
+    List<Object[]> getViolationStats();
 }
