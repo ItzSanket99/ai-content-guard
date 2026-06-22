@@ -3,6 +3,7 @@ package com.sanket.aicontentguard.service;
 import com.sanket.aicontentguard.dto.LoginRequestDTO;
 import com.sanket.aicontentguard.dto.LoginResponseDTO;
 import com.sanket.aicontentguard.dto.RegisterRequestDTO;
+import com.sanket.aicontentguard.entity.AuditAction;
 import com.sanket.aicontentguard.entity.Role;
 import com.sanket.aicontentguard.entity.User;
 import com.sanket.aicontentguard.exception.InvalidCredentialsException;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     private final JwtService jwtService;
 
+    private final AuditLogService auditLogService;
+
     @Override
     public String registerUser(RegisterRequestDTO request) {
 
@@ -39,6 +42,12 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(user);
+
+        auditLogService.log(
+                AuditAction.USER_REGISTERED,
+                user.getEmail(),
+                "User registration successful"
+        );
 
         return "User registered successfully";
     }
@@ -68,6 +77,12 @@ public class UserServiceImpl implements UserService {
                 jwtService.generateToken(
                         user
                 );
+
+        auditLogService.log(
+                AuditAction.USER_LOGIN,
+                user.getEmail(),
+                "User logged in"
+        );
 
         return LoginResponseDTO.builder()
                 .userId(user.getId())

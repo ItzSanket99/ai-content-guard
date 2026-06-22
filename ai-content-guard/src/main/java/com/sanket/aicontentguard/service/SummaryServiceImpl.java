@@ -4,10 +4,7 @@ import com.sanket.aicontentguard.dto.CreateSummaryRequestDTO;
 import com.sanket.aicontentguard.dto.RiskAnalysisResult;
 import com.sanket.aicontentguard.dto.SummaryHistoryDTO;
 import com.sanket.aicontentguard.dto.SummaryResponseDTO;
-import com.sanket.aicontentguard.entity.Summary;
-import com.sanket.aicontentguard.entity.SummaryStatus;
-import com.sanket.aicontentguard.entity.User;
-import com.sanket.aicontentguard.entity.Violation;
+import com.sanket.aicontentguard.entity.*;
 import com.sanket.aicontentguard.repository.SummaryRepository;
 import com.sanket.aicontentguard.repository.UserRepository;
 import com.sanket.aicontentguard.repository.ViolationRepository;
@@ -30,6 +27,9 @@ public class SummaryServiceImpl implements SummaryService{
 
     @Autowired
     private ViolationRepository violationRepository;
+
+    @Autowired
+    private AuditLogService auditLogService;
 
     @Override
     public SummaryResponseDTO createSummary(CreateSummaryRequestDTO request, String userEmail) {
@@ -63,6 +63,12 @@ public class SummaryServiceImpl implements SummaryService{
         Summary saved =
                 summaryRepository.save(summary);
 
+        auditLogService.log(
+                AuditAction.SUMMARY_CREATED,
+                user.getEmail(),
+                "Summary ID: " + saved.getId()
+        );
+
         for(var category : riskResult.getViolations()) {
 
             Violation violation =
@@ -72,6 +78,12 @@ public class SummaryServiceImpl implements SummaryService{
                             .description(category.name())
                             .summary(saved)
                             .build();
+
+            auditLogService.log(
+                    AuditAction.VIOLATION_DETECTED,
+                    user.getEmail(),
+                    category.name()
+            );
 
             violationRepository.save(violation);
         }
