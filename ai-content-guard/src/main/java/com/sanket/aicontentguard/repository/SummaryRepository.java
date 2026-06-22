@@ -3,6 +3,7 @@ package com.sanket.aicontentguard.repository;
 import com.sanket.aicontentguard.entity.Summary;
 import com.sanket.aicontentguard.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,10 @@ public interface SummaryRepository extends JpaRepository<Summary, Long> {
             Long id,
             User user
     );
+
+    @Query("""
+            SELECT AVG(s.riskScore)
+            FROM Summary s
+            """)
+    Double getAverageRiskScore();
 }
