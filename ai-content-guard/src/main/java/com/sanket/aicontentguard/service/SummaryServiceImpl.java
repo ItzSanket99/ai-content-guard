@@ -8,6 +8,7 @@ import com.sanket.aicontentguard.entity.*;
 import com.sanket.aicontentguard.repository.SummaryRepository;
 import com.sanket.aicontentguard.repository.UserRepository;
 import com.sanket.aicontentguard.repository.ViolationRepository;
+import com.sanket.aicontentguard.service.ai.AiSummarizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,9 @@ public class SummaryServiceImpl implements SummaryService{
     @Autowired
     private AuditLogService auditLogService;
 
+    @Autowired
+    private AiSummarizationService aiSummarizationService;
+
     @Override
     public SummaryResponseDTO createSummary(CreateSummaryRequestDTO request, String userEmail) {
 
@@ -46,9 +50,10 @@ public class SummaryServiceImpl implements SummaryService{
                 );
 
         String generatedSummary =
-                request.getText().length() > 100
-                        ? request.getText().substring(0, 100) + "..."
-                        : request.getText();
+                aiSummarizationService.generateSummary(
+                        request.getText(),
+                        request.getSummaryType()
+                );
 
         Summary summary = Summary.builder()
                 .originalText(request.getText())
