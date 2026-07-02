@@ -4,8 +4,12 @@ import com.sanket.aicontentguard.auth.dto.LoginRequestDTO;
 import com.sanket.aicontentguard.auth.dto.LoginResponseDTO;
 import com.sanket.aicontentguard.auth.dto.RegisterRequestDTO;
 import com.sanket.aicontentguard.auth.service.UserService;
+import com.sanket.aicontentguard.common.ApiResponse;
+import com.sanket.aicontentguard.common.ApiResponseBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,17 +24,30 @@ import org.springframework.web.bind.annotation.RestController;
         private final UserService userService;
 
         @PostMapping("/register")
-        public String register(
+        public ResponseEntity<ApiResponse<String>> register(
                 @Valid @RequestBody RegisterRequestDTO request) {
 
-            return userService.registerUser(request);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(
+                    ApiResponseBuilder.success(
+                            "User register Successfully",
+                            userService.registerUser(request)
+                    )
+
+            );
         }
 
         @PostMapping("/login")
-        public LoginResponseDTO login(
+        public ResponseEntity<ApiResponse<LoginResponseDTO>> login(
                 @Valid @RequestBody LoginRequestDTO request) {
 
-            return userService.loginUser(request);
+            return ResponseEntity.ok(
+                    ApiResponseBuilder.success(
+                            "User Login Successfully",
+                        userService.loginUser(request)
+
+                    )
+            );
         }
     }
 
