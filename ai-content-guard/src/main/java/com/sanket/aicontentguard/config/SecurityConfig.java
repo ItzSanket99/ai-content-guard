@@ -1,6 +1,6 @@
 package com.sanket.aicontentguard.config;
 
-import com.sanket.aicontentguard.security.JwtAuthenticationFilter;
+import com.sanket.aicontentguard.auth.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
