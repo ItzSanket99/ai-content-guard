@@ -1,4 +1,4 @@
-package com.sanket.aicontentguard.exception;
+package com.sanket.aicontentguard.auth.exception;
 
 public class ResourceAlreadyExistsException extends RuntimeException {
 

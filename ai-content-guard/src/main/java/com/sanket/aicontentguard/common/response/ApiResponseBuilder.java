@@ -1,4 +1,4 @@
-package com.sanket.aicontentguard.common;
+package com.sanket.aicontentguard.common.response;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +14,7 @@ public class ApiResponseBuilder {
 
         return ApiResponse.<T>builder()
                 .success(true)
+                .status(200)
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .data(data)
@@ -21,14 +22,18 @@ public class ApiResponseBuilder {
     }
 
     public static <T> ApiResponse<T> error(
-            String message
+            String message,
+            int status
     ) {
 
         return ApiResponse.<T>builder()
                 .success(false)
+                .status(status)
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .data(null)
                 .build();
     }
+
+
 }

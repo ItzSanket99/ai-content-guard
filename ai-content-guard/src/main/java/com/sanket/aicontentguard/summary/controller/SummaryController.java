@@ -1,7 +1,7 @@
 package com.sanket.aicontentguard.summary.controller;
 
-import com.sanket.aicontentguard.common.ApiResponse;
-import com.sanket.aicontentguard.common.ApiResponseBuilder;
+import com.sanket.aicontentguard.common.response.ApiResponse;
+import com.sanket.aicontentguard.common.response.ApiResponseBuilder;
 import com.sanket.aicontentguard.summary.service.SummaryService;
 import com.sanket.aicontentguard.summary.dto.CreateSummaryRequestDTO;
 import com.sanket.aicontentguard.summary.dto.SummaryHistoryDTO;

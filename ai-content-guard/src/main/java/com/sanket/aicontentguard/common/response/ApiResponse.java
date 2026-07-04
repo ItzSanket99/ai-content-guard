@@ -1,4 +1,4 @@
-package com.sanket.aicontentguard.common;
+package com.sanket.aicontentguard.common.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +12,8 @@ public class ApiResponse<T> {
     private boolean success;
 
     private String message;
+
+    private int status;
 
     private LocalDateTime timestamp;
 
