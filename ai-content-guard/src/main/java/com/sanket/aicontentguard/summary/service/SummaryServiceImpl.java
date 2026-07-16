@@ -1,5 +1,7 @@
 package com.sanket.aicontentguard.summary.service;
 
+import com.sanket.aicontentguard.ai.model.AiExecutionResult;
+import com.sanket.aicontentguard.ai.pipeline.AiExecutionPipeline;
 import com.sanket.aicontentguard.audit.entity.AuditAction;
 import com.sanket.aicontentguard.auth.entity.User;
 import com.sanket.aicontentguard.analytics.dto.RiskAnalysisResult;
@@ -33,9 +35,9 @@ public class SummaryServiceImpl implements SummaryService{
 
     private final ViolationRepository violationRepository;
 
-    private final AuditLogService auditLogService;
+    private final AuditLogService   auditLogService;
 
-    private final AiSummarizationService aiSummarizationService;
+    private final AiExecutionPipeline aiExecutionPipeline;
 
     @Override
     public SummaryResponseDTO createSummary(CreateSummaryRequestDTO request, String userEmail) {
@@ -51,19 +53,24 @@ public class SummaryServiceImpl implements SummaryService{
                         request.getText()
                 );
 
-        String generatedSummary =
-                aiSummarizationService.generateSummary(
+        AiExecutionResult aiResult =
+                aiExecutionPipeline.execute(
                         request.getText(),
                         request.getSummaryType()
                 );
 
         Summary summary = Summary.builder()
                 .originalText(request.getText())
-                .summaryText(generatedSummary)
+                .summaryText(aiResult.getSummary())
                 .summaryType(request.getSummaryType())
                 .status(SummaryStatus.COMPLETED)
                 .riskScore(riskResult.getRiskScore())
                 .riskLevel(riskResult.getRiskLevel())
+                .aiProvider(aiResult.getProvider())
+                .aiModel(aiResult.getModel())
+                .promptVersion(aiResult.getPromptVersion())
+                .executionTimeMs(aiResult.getExecutionTimeMs())
+                .fallbackUsed(aiResult.isFallbackUsed())
                 .user(user)
                 .build();
 
@@ -105,6 +112,10 @@ public class SummaryServiceImpl implements SummaryService{
                         riskResult.getViolations()
                 )
                 .summaryType(saved.getSummaryType())
+                .aiProvider(saved.getAiProvider())
+                .aiModel(saved.getAiModel())
+                .executionTimeMs(saved.getExecutionTimeMs())
+                .fallbackUsed(saved.getFallbackUsed())
                 .build();
     }
 
@@ -163,6 +174,10 @@ public class SummaryServiceImpl implements SummaryService{
                 .riskScore(summary.getRiskScore())
                 .riskLevel(summary.getRiskLevel())
                 .summaryType(summary.getSummaryType())
+                .aiProvider(summary.getAiProvider())
+                .aiModel(summary.getAiModel())
+                .executionTimeMs(summary.getExecutionTimeMs())
+                .fallbackUsed(summary.getFallbackUsed())
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.sanket.aicontentguard.ai.pipeline;
 
+import com.sanket.aicontentguard.ai.fallback.FallbackSummaryGenerator;
 import com.sanket.aicontentguard.ai.model.AiExecutionResult;
 import com.sanket.aicontentguard.ai.provider.AiProvider;
 import com.sanket.aicontentguard.ai.prompt.SummaryPromptBuilder;
@@ -15,6 +16,8 @@ public class AiExecutionPipeline {
     private final SummaryPromptBuilder promptBuilder;
 
     private final AiProvider aiProvider;
+
+    private final FallbackSummaryGenerator fallbackSummaryGenerator;
 
     @Value("${gemini.model}")
     private String model;
@@ -32,10 +35,26 @@ public class AiExecutionPipeline {
                         summaryType
                 );
 
-        String summary =
-                aiProvider.generateContent(
-                        prompt
-                );
+        String summary;
+
+        boolean fallbackUsed = false;
+
+        try {
+
+            summary =
+                    aiProvider.generateContent(
+                            prompt
+                    );
+
+        } catch (Exception ex) {
+
+            fallbackUsed = true;
+
+            summary =
+                    fallbackSummaryGenerator.generate(
+                            text
+                    );
+        }
 
         long end = System.currentTimeMillis();
 
@@ -45,7 +64,7 @@ public class AiExecutionPipeline {
                 .model(model)
                 .executionTimeMs(end - start)
                 .promptVersion("v1")
-                .fallbackUsed(false)
+                .fallbackUsed(fallbackUsed)
                 .build();
     }
 

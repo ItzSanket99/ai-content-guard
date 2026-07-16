@@ -29,5 +29,13 @@ public class SummaryResponseDTO {
 
     private RiskLevel riskLevel;
 
+    private String aiProvider;
+
+    private String aiModel;
+
+    private Long executionTimeMs;
+
+    private Boolean fallbackUsed;
+
     private List<ViolationCategory> violations;
 }

@@ -45,6 +45,21 @@ public class Summary {
     @Enumerated(EnumType.STRING)
     private RiskLevel riskLevel;
 
+    @Column(name = "ai_provider")
+    private String aiProvider;
+
+    @Column(name = "ai_model")
+    private String aiModel;
+
+    @Column(name = "prompt_version")
+    private String promptVersion;
+
+    @Column(name = "execution_time_ms")
+    private Long executionTimeMs;
+
+    @Column(name = "fallback_used")
+    private Boolean fallbackUsed;
+
     @OneToMany(
             mappedBy = "summary",
             cascade = CascadeType.ALL
