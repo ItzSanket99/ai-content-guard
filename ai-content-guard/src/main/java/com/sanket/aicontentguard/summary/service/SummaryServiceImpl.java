@@ -116,6 +116,9 @@ public class SummaryServiceImpl implements SummaryService{
                 .aiModel(saved.getAiModel())
                 .executionTimeMs(saved.getExecutionTimeMs())
                 .fallbackUsed(saved.getFallbackUsed())
+                .reasons(
+                        riskResult.getReasons()
+                )
                 .build();
     }
 
@@ -178,6 +181,7 @@ public class SummaryServiceImpl implements SummaryService{
                 .aiModel(summary.getAiModel())
                 .executionTimeMs(summary.getExecutionTimeMs())
                 .fallbackUsed(summary.getFallbackUsed())
+
                 .build();
     }
 }

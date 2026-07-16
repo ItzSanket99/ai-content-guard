@@ -36,6 +36,7 @@ public class SummaryResponseDTO {
     private Long executionTimeMs;
 
     private Boolean fallbackUsed;
+    private List<String> reasons;
 
     private List<ViolationCategory> violations;
 }

@@ -16,4 +16,5 @@ public class RiskAnalysisResult {
     private RiskLevel riskLevel;
 
     private List<ViolationCategory> violations;
+    private List<String> reasons;
 }
