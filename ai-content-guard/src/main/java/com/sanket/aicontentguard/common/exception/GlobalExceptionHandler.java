@@ -1,5 +1,6 @@
 package com.sanket.aicontentguard.common.exception;
 
+import com.sanket.aicontentguard.ai.exception.AiServiceException;
 import com.sanket.aicontentguard.common.response.ApiResponse;
 import com.sanket.aicontentguard.common.response.ApiResponseBuilder;
 import com.sanket.aicontentguard.auth.exception.InvalidCredentialsException;
@@ -74,6 +75,21 @@ public class GlobalExceptionHandler {
                         ApiResponseBuilder.error(
                                 "Something went wrong",
                                 HttpStatus.INTERNAL_SERVER_ERROR.value()
+                        )
+                );
+    }
+
+    @ExceptionHandler(AiServiceException.class)
+    public ResponseEntity<ApiResponse<Object>>
+    handleAiException(AiServiceException ex){
+
+        log.error(ex.getMessage(), ex);
+
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(
+                        ApiResponseBuilder.error(
+                                ex.getMessage(),
+                                HttpStatus.SERVICE_UNAVAILABLE.value()
                         )
                 );
     }
