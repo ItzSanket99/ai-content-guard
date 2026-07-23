@@ -1,28 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-function Home() {
-  return <h1>Home</h1>;
-}
-
-function Login() {
-  return <h1>Login</h1>;
-}
-
-function Register() {
-  return <h1>Register</h1>;
-}
-
-function Dashboard() {
-  return <h1>Dashboard</h1>;
-}
-
-function History() {
-  return <h1>History</h1>;
-}
-
-function Admin() {
-  return <h1>Admin</h1>;
-}
+import Home from "@/pages/public/Home";
+import Login from "@/pages/auth/Login";
+import Register from "@/pages/auth/Register";
+import Dashboard from "@/pages/dashboard/Dashboard";
+import History from "@/pages/history/History";
+import Admin from "@/pages/admin/Admin";
 
 export default function AppRoutes() {
   return (
